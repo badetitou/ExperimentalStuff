@@ -1,5 +1,5 @@
 private - utilities
-outgoingDependenciesFor: entities
+dictionaryOfOutgoingDependenciesFor: entities
 	| deps |
 	deps := Dictionary new.
 	entities

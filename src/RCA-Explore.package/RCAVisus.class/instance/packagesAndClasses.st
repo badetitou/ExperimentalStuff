@@ -1,16 +1,19 @@
 software visualization
 packagesAndClasses
 	<script: 'RCAVisus new packagesAndClasses'>
-	| dependenciesP |
-	dependenciesP := self
-		outgoingDependenciesFor: model allModelNamespaces.
+	| dependencies entities |
+	
+	entities := model allModelNamespaces.
+	dependencies := self dictionaryOfOutgoingDependenciesFor: entities.
+
 	view := RTMondrian new.
 	view shape rectangle
 		color: Color white;
 		borderColor: Color black;
 		withTextAbove: [ :p | self formatName: p ].
+
 	view
-		nodes: model allModelNamespaces
+		nodes: entities
 		forEach: [ :p | 
 			view shape rectangle
 				width: #numberOfAttributes;
@@ -20,9 +23,11 @@ packagesAndClasses
 			view layout grid ].
 	"view shape arrowedLine withShorterDistanceAttachPoint."
 	view shape shape: self arrowedLineOnCompositeNodes.
+
 	view edges
 		moveBehind;
-		connectToAll: [ :p | (dependenciesP at: p) atScope: FAMIXNamespace ].
+		connectToAll: [ :p | (dependencies at: p) atScope: FAMIXNamespace ].
+
 	view normalizer
 		objects: model allModelClasses;
 		normalizeColor: #numberOfLinesOfCode
@@ -38,4 +43,5 @@ packagesAndClasses
      using: {Color yellow . Color red}
 	  using: view edges."
 	view layout circle.
+
 	view open
