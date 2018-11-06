@@ -8,7 +8,7 @@ packagesAndClasses
 	view shape rectangle
 		color: Color white;
 		borderColor: Color black;
-		withTextAbove: [ :p | self pckgLabel: p ].
+		withTextAbove: [ :p | self formatName: p ].
 	view
 		nodes: model allModelNamespaces
 		forEach: [ :p | 

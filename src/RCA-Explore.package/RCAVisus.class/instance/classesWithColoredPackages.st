@@ -1,62 +1,53 @@
 software visualization
 classesWithColoredPackages
 	<script: 'RCAVisus new classesWithColoredPackages'>
-	| shape elts legend entities |
+	
+	| legend entities |
+	
+	entities := model allModelTypes select: [ :c | c numberOfLinesOfCode > 10 ].
 
-	entities := model allModelTypes
-		select: [ :c | c numberOfLinesOfCode > 10 ].
-
-	view := RTView new.
-	view @ RTDraggableView.
-	view @ RTZoomableView.
-	shape := RTBox new borderColor: Color darkGray.
-	shape size: [ :c | (self dependenciesToModelNamespaces: c) size max: 1 ].
-
-	elts := shape elementsOn: entities.
-	view addAll: elts.
-	elts @ RTDraggable.
-	elts
-		@
-			(RTPopup new
-				text: [ :elt | 
-					(self pckgLabel: elt) , String cr ,
+	view := RTMondrian new.
+	view interaction
+		noInteractions ;
+		popupText: [ :elt | 
+			(self formatName: elt) , String cr ,
 					'Attributes:' , elt numberOfAttributes asString ,
 					' / Methods:' , elt numberOfMethods asString ,
-					' / LOC:' , elt numberOfLinesOfCode asString ]).
+					' / LOC:' , elt numberOfLinesOfCode asString ].
 
-	RTMetricNormalizer new
-		elements: (elts sorted: [ :x :y | x mooseName <= y mooseName ]);
+	view shape rectangle
+		borderColor: Color darkGray ;
+		size: [ :c | (self dependenciesToModelNamespaces: c) size max: 1 ].
+	view nodes: entities.
+
+	view normalizer
+	   objects: entities ;
 		distinctColorUsing: [ :e | 
 			| ns |
 			ns := e namespaceScope.
-			[ (self pckgLabel: ns) includes: $. ]
+			[ (self formatName: ns) includes: $. ]
 				whileTrue: [ ns := ns parentScope ].
 			ns ].
 
-	RTEdgeBuilder new
-		view: view;
-		moveBehind;
-		objects: entities;
-		connectToAll:
-				[ :c | c queryOutgoingDependencies withoutSelfLoops atScope: FAMIXType ].
+	view edges
+		moveBehind ;
+		beDirectional ;
+		connectToAll: [ :c | c queryOutgoingDependencies withoutSelfLoops atScope: FAMIXType ].
 
-	RTOptimizedForceBasedLayout new
-		on: elts;
-		nbIterations: 50;
-		strength: 0.5;
-		charge: -500;
-		initialLayout: RTCircleLayout.
+	view layout force
+		charge: -100.
 
 	legend := RTLegendBuilder new.
 	legend onDemand: 'Legend'.
-	legend view: view.
-	(view elements
+	legend view: view view.
+	((view  view elements
 		collectAsSet: [ :e | e model namespaceScope -> e color ])
+		asOrderedCollection sorted: [ :x :y | x key mooseName <= y key mooseName ])
 		do: [ :assoc | 
 			legend
 				addColor: assoc value
 				object: TRBoxShape new
-				text: [:a | self pckgLabel: assoc key] ].
+				text: [:a | self formatName: assoc key] ].
 	legend build.
 
 	view open

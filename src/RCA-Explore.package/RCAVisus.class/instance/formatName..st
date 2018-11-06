@@ -1,4 +1,4 @@
 private - utilities
-pckgLabel: aNamespace
+formatName: aNamespace
 	^ (aNamespace mooseName withoutPrefix: self defaultJavaPackagePrefix)
 			copyReplaceAll: '::' with: '.'

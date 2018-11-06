@@ -1,7 +1,9 @@
 software visualization
 cyclesInPackage
 	<script: 'RCAVisus new cyclesInPackage'>
+
 	| cycleCalculator entities dependencies shape elts |
+
 	entities := model allModelNamespaces.
 	dependencies := self outgoingDependenciesFor: entities.
 	cycleCalculator := MalTarjan new.
@@ -19,7 +21,7 @@ cyclesInPackage
 		add:
 			(RTLabel new
 				color: Color black;
-				text: [ :p | self pckgLabel: p ]).
+				text: [ :p | self formatName: p ]).
 	shape
 		add:
 			(RTBox new
