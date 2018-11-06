@@ -3,8 +3,8 @@ cyclesInPackage
 	<script: 'RCAVisus new cyclesInPackage'>
 	| cycleCalculator entities dependencies |
 	entities := model allModelNamespaces.
-	dependencies := self
-		outgoingDependenciesFor: model allModelNamespaces.
+	dependencies := self outgoingDependenciesFor: model allModelNamespaces.
+
 	cycleCalculator := MalTarjan new.
 	cycleCalculator nodes: entities.
 	cycleCalculator
@@ -12,6 +12,7 @@ cyclesInPackage
 		from: #yourself
 		toAll: [ :p | (dependencies at: p) atScope: FAMIXNamespace ].
 	cycleCalculator run.
+
 	view := RTMondrian new.
 	view shape rectangle
 		size: 10;
@@ -26,10 +27,11 @@ cyclesInPackage
 	view edges
 		moveBehind;
 		connectToAll: [ :p | (dependencies at: p) atScope: FAMIXNamespace ].
+
 	view layout force
 		charge: -1000;
 		length: 50;
 		strength: 0.1;
 		nbIterations: 100.
-	"initialLayout: RTCircleLayout new ;"
+
 	view open
