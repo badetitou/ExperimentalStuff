@@ -1,0 +1,14 @@
+{
+	"commentStamp" : "",
+	"super" : "Object",
+	"category" : "RCA-Explore",
+	"classinstvars" : [ ],
+	"pools" : [ ],
+	"classvars" : [ ],
+	"instvars" : [
+		"view",
+		"model"
+	],
+	"name" : "RCAVisus",
+	"type" : "normal"
+}
