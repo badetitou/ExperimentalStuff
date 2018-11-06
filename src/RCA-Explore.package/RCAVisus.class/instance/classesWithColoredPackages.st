@@ -19,10 +19,10 @@ classesWithColoredPackages
 		@
 			(RTPopup new
 				text: [ :elt | 
-					(self pckgLabel: elt) , String cr , 'Attributes:'
-						, elt numberOfAttributes asString , ' / Methods:'
-						, elt numberOfMethods asString , ' / LOC:'
-						, elt numberOfLinesOfCode asString ]).
+					(self pckgLabel: elt) , String cr ,
+					'Attributes:' , elt numberOfAttributes asString ,
+					' / Methods:' , elt numberOfMethods asString ,
+					' / LOC:' , elt numberOfLinesOfCode asString ]).
 
 	RTMetricNormalizer new
 		elements: (elts sorted: [ :x :y | x mooseName <= y mooseName ]);
@@ -40,12 +40,12 @@ classesWithColoredPackages
 		connectToAll:
 				[ :c | c queryOutgoingDependencies withoutSelfLoops atScope: FAMIXType ].
 
-	RTForceBasedLayout new
+	RTOptimizedForceBasedLayout new
 		on: elts;
 		nbIterations: 50;
 		strength: 0.5;
 		charge: -500;
-		initialLayout: RTGridLayout.
+		initialLayout: RTCircleLayout.
 
 	legend := RTLegendBuilder new.
 	legend onDemand: 'Legend'.
@@ -58,4 +58,5 @@ classesWithColoredPackages
 				object: TRBoxShape new
 				text: [:a | self pckgLabel: assoc key] ].
 	legend build.
+
 	view open
