@@ -1,6 +1,7 @@
 software visualization
-cyclesInPackage
-	<script: 'RCAVisus new cyclesInPackage'>
+cyclesInPackageRoassalSpecial
+	"same as cyclesInPackage, but correct a bug in Roassal to allow width and color on edges"
+	<script: 'RCAVisus new cyclesInPackageRoassalSpecial'>
 
 	| cycleCalculator entities builder |
 
@@ -41,6 +42,11 @@ cyclesInPackage
 						ifTrue: [ Color lightRed ]
 						ifFalse: [ Color gray ] ]) ;
 		connectToAll: [ :p | (self namespaceDependenciesFor: p) ].
+	builder normalizer 
+   		edges: builder edges createdEdges ;
+		elements: entities ;
+   		normalizeLineWidth: [ :from :to | (self dependenciesBetween: from and: to) size ]
+			min: 0.2 max: 20.
 
 	builder layout force
 		nbIterations: 1000;

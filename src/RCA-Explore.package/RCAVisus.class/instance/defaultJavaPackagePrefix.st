@@ -1,3 +1,3 @@
-private - utilities
+private  model
 defaultJavaPackagePrefix
 	^ 'org::rcaexplore::'

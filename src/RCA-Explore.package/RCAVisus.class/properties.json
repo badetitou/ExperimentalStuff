@@ -6,8 +6,8 @@
 	"pools" : [ ],
 	"classvars" : [ ],
 	"instvars" : [
-		"view",
-		"model"
+		"model",
+		"dependencyMatrix"
 	],
 	"name" : "RCAVisus",
 	"type" : "normal"

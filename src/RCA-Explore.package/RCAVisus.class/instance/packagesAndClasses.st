@@ -1,34 +1,28 @@
 software visualization
 packagesAndClasses
 	<script: 'RCAVisus new packagesAndClasses'>
-	| dependencies entities |
+	| entities viewEdges builder |
 	
 	entities := model allModelNamespaces.
-	dependencies := self dictionaryOfOutgoingDependenciesFor: entities.
+	self initializeNamespaceDependenciesFor: entities.
 
-	view := RTMondrian new.
-	view shape rectangle
+	builder := self zoomableMondrianBuilder.
+	builder shape rectangle
 		color: Color white;
 		borderColor: Color black;
 		withTextAbove: [ :p | self formatName: p ].
 
-	view
+	builder
 		nodes: entities
 		forEach: [ :p | 
-			view shape rectangle
+			builder shape rectangle
 				width: #numberOfAttributes;
 				height: #numberOfMethods;
 				borderColor: Color black.
-			view nodes: (p types reject: #isParameterizedType).
-			view layout grid ].
-	"view shape arrowedLine withShorterDistanceAttachPoint."
-	view shape shape: self arrowedLineOnCompositeNodes.
+			builder nodes: (p types reject: #isParameterizedType).
+			builder layout grid ].
 
-	view edges
-		moveBehind;
-		connectToAll: [ :p | (dependencies at: p) atScope: FAMIXNamespace ].
-
-	view normalizer
+	builder normalizer
 		objects: model allModelClasses;
 		normalizeColor: #numberOfLinesOfCode
 			using:
@@ -37,11 +31,14 @@ packagesAndClasses
 			min: 0
 			max: 1000.
 
-	"view normalizer
-	edges: view edges ;
-	normalizeColor: [:e | ((dependenciesP at: (e from model)) select: [ :dep | dep to atScope: FAMIXNamespace ]) size ]
-     using: {Color yellow . Color red}
-	  using: view edges."
-	view layout circle.
+	builder edges moveBehind ; beDirectional.
+	builder shape shape: self arrowedLineOnCompositeNodes.
+	viewEdges := builder edges connectToAll: [ :p | (self namespaceDependenciesFor: p) ].
+	builder normalizer 
+   		edges: viewEdges;
+   		normalizeLineWidth: [ :from :to | (self dependenciesBetween: from and: to) size ]
+			min: 0.2 max: 20.
 
-	view open
+	builder layout circle.
+
+	builder open

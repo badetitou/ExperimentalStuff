@@ -1,4 +1,4 @@
-private - utilities
+private view
 arrowedLineOnCompositeNodes
 	^ RTArrowedLine new
 		attachPoint:
