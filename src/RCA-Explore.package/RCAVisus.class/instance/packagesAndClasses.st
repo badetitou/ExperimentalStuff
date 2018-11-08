@@ -1,19 +1,18 @@
 software visualization
 packagesAndClasses
 	<script: 'RCAVisus new packagesAndClasses'>
-	| entities viewEdges builder |
+	| entities viewEdges |
 	
 	entities := model allModelNamespaces.
 	self initializeNamespaceDependenciesFor: entities.
 
-	builder := self zoomableMondrianBuilder.
+	self zoomableMondrianBuilder.
 	builder shape rectangle
 		color: Color white;
 		borderColor: Color black;
 		withTextAbove: [ :p | self formatName: p ].
 
-	builder
-		nodes: entities
+	builder nodes:  entities
 		forEach: [ :p | 
 			builder shape rectangle
 				width: #numberOfAttributes;
@@ -21,6 +20,7 @@ packagesAndClasses
 				borderColor: Color black.
 			builder nodes: (p types reject: #isParameterizedType).
 			builder layout grid ].
+	self makeNodesClickable.
 
 	builder normalizer
 		objects: model allModelClasses;
@@ -38,7 +38,13 @@ packagesAndClasses
    		edges: viewEdges;
    		normalizeLineWidth: [ :from :to | (self dependenciesBetween: from and: to) size ]
 			min: 0.2 max: 20.
+	self makeLinksClickable.
 
-	builder layout circle.
+	"builder layout circle."	
+	builder layout force
+		nbIterations: 1000;
+		strength: 0.1;
+		charge: -500.
+
 
 	builder open

@@ -3,7 +3,7 @@ cyclesInPackageRoassalSpecial
 	"same as cyclesInPackage, but correct a bug in Roassal to allow width and color on edges"
 	<script: 'RCAVisus new cyclesInPackageRoassalSpecial'>
 
-	| cycleCalculator entities builder |
+	| cycleCalculator entities |
 
 	entities := model allModelNamespaces.
 	self initializeNamespaceDependenciesFor: entities.
@@ -16,7 +16,7 @@ cyclesInPackageRoassalSpecial
 		toAll: [ :p | self namespaceDependenciesFor: p ].
 	cycleCalculator run.
 
-	builder := self zoomableMondrianBuilder.
+	self zoomableMondrianBuilder.
 	builder shape rectangle
 				size: 10;
 				borderColor: Color darkGray ;
@@ -28,7 +28,8 @@ cyclesInPackageRoassalSpecial
 				withTextColor: Color black.
 
 	builder nodes: entities.
-
+	self makeNodesClickable.
+	
 	builder edges
 		moveBehind ;
 		beDirectional ;
@@ -47,6 +48,7 @@ cyclesInPackageRoassalSpecial
 		elements: entities ;
    		normalizeLineWidth: [ :from :to | (self dependenciesBetween: from and: to) size ]
 			min: 0.2 max: 20.
+	self makeLinksClickable.
 
 	builder layout force
 		nbIterations: 1000;

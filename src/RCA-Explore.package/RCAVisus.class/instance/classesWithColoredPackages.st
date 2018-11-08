@@ -2,14 +2,13 @@ software visualization
 classesWithColoredPackages
 	<script: 'RCAVisus new classesWithColoredPackages'>
 	
-	| entities builder legend colors |
+	| entities legend |
 	
 	entities := model allModelTypes select: [ :c | c numberOfLinesOfCode > 10 ].
 	self initializeNamespaceDependenciesFor: entities.
 
-	builder := self zoomableMondrianBuilder.
+	self zoomableMondrianBuilder.
 	builder interaction
-		"noInteractions ;"
 		popupText: [ :elt | 
 			(self formatName: elt) , String cr ,
 					'Attributes:' , elt numberOfAttributes asString ,
@@ -20,16 +19,18 @@ classesWithColoredPackages
 		borderColor: Color darkGray ;
 		size: [ :c | (self namespaceDependenciesFor: c) size max: 1 ].
 	builder nodes: entities.
+	self makeNodesClickable.
 
 	builder normalizer
 	   objects: entities ;
-		distinctColorUsing: [ :e | 
-			| ns |
-			ns := e namespaceScope.
-			[ (self formatName: ns) includes: $. ]
-				whileTrue: [ ns := ns parentScope ].
-			ns ].
+		distinctColorUsing: [ :e |  self topNamespaceFor: e ].
 
+	builder shape line
+		color: [ :a ||from to|
+			from := a key.
+			to := a value.
+			((self topNamespaceFor: from) = (self topNamespaceFor: to) )
+				ifTrue: [ Color lightBlue ] ifFalse: [ Color lightGray ] ].
 	builder edges
 		moveBehind ;
 		beDirectional ;
@@ -38,12 +39,14 @@ classesWithColoredPackages
 	builder layout force
 		charge: -100.
 
-	colors := self collectPackageColors: builder view.
-
 	legend := RTLegendBuilder new.
 	legend view: builder view.
 	legend onDemand: 'Legend'.
-	colors do: [ :assoc | 
+	legend addColor: Color lightBlue object: TRLineShape new text: 'Dependency within a package'.
+	legend addColor: Color lightGray object: TRLineShape new text: 'Dependency between packages'.
+	
+	legend addColor: Color white object: TRLineShape new text: '-- Package colors: --'.
+	self collectPackageColors do: [ :assoc | 
 			legend
 				addColor: assoc value
 				object: TRBoxShape new

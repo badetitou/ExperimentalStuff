@@ -1,3 +1,3 @@
 private  model
 defaultJavaPackagePrefix
-	^ 'org::rcaexplore::'
+	^ 'org::rcaexplore'

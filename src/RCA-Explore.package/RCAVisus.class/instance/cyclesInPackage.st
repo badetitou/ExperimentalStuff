@@ -2,7 +2,7 @@ software visualization
 cyclesInPackage
 	<script: 'RCAVisus new cyclesInPackage'>
 
-	| cycleCalculator entities builder |
+	| cycleCalculator entities |
 
 	entities := model allModelNamespaces.
 	self initializeNamespaceDependenciesFor: entities.
@@ -15,7 +15,7 @@ cyclesInPackage
 		toAll: [ :p | self namespaceDependenciesFor: p ].
 	cycleCalculator run.
 
-	builder := self zoomableMondrianBuilder.
+	self zoomableMondrianBuilder.
 	builder shape rectangle
 				size: 10;
 				borderColor: Color darkGray ;
@@ -27,6 +27,7 @@ cyclesInPackage
 				withTextColor: Color black.
 
 	builder nodes: entities.
+	self makeNodesClickable.
 
 	builder edges
 		moveBehind ;
@@ -41,6 +42,7 @@ cyclesInPackage
 						ifTrue: [ Color lightRed ]
 						ifFalse: [ Color gray ] ]) ;
 		connectToAll: [ :p | (self namespaceDependenciesFor: p) ].
+	self makeLinksClickable.
 
 	builder layout force
 		nbIterations: 1000;
