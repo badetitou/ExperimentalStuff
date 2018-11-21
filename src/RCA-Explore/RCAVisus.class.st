@@ -1,3 +1,9 @@
+"
+msePath := 'D:\Developpement\mse\rcaexplore\verveinej\rca.mse'.
+rootFolderPath := 'D:\Developpement\mse\rcaexplore\rcaexplore'.
+mooseModel := MooseModel importFromMSEStream: msePath asFileReference readStream.
+mooseModel rootFolder: rootFolderPath.
+"
 Class {
 	#name : #RCAVisus,
 	#superclass : #Object,
@@ -6,7 +12,7 @@ Class {
 		'dependencyMatrix',
 		'builder'
 	],
-	#category : 'RCA-Explore'
+	#category : #'RCA-Explore'
 }
 
 { #category : #'private view' }
