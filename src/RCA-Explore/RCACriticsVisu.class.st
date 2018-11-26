@@ -1,3 +1,12 @@
+"
+MooseModel resetRoot.
+msePath := 'D:\Developpement\mse\rcaexplore\verveinej\rca.mse'.
+rootFolderPath := 'D:\Developpement\mse\rcaexplore\rcaexplore'.
+mooseModel := MooseModel importFromMSEStream: msePath asFileReference readStream.
+mooseModel rootFolder: rootFolderPath.
+mooseModel name: 'rca'.
+mooseModel install.
+"
 Class {
 	#name : #RCACriticsVisu,
 	#superclass : #Object,
