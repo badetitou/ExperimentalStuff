@@ -136,3 +136,10 @@ RCACriticsVisu >> packagesHierarchyWithComplexity [
 		build;
 		view
 ]
+
+{ #category : #'software visualization' }
+RCACriticsVisu >> testMethods [
+	<script: 'RCACriticsVisu new testMethods inspect'>
+	^ (model allModelMethods select: [ :t | t annotationInstances notEmpty and: [ t annotationTypes anySatisfy: [ :annotation | annotation name endsWith: 'Test' ] ] ])
+		asOrderedCollection flattened
+]
