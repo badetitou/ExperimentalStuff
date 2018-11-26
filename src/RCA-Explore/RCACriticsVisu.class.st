@@ -43,6 +43,26 @@ RCACriticsVisu >> classesAttributes [
 ]
 
 { #category : #'software visualization' }
+RCACriticsVisu >> classesInPackagesHierarchy [
+	<script: 'RCACriticsVisu new classesInPackagesHierarchy inspect'>
+	| b |
+	b := RTMondrian new.
+	b shape rectangle.
+	^ b
+		nodes: model allModelNamespaces
+			forEach: [ :p | 
+			b shape rectangle
+				color: Color red;
+				size: #numberOfLinesOfCode.
+			b nodes: p classes.
+			b edges connectFrom: #superclass. b layout tree ];
+		edgesFrom: #parentScope;
+		treeLayout;
+		build;
+		view
+]
+
+{ #category : #'software visualization' }
 RCACriticsVisu >> deadMethod [
 	<script: 'RCACriticsVisu new deadMethod inspect'>
 	^ (model allModelMethods collect: #incomingInvocations thenSelect: #isNotEmpty) asOrderedCollection
