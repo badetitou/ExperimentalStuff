@@ -17,6 +17,14 @@ Class {
 }
 
 { #category : #'software visualization' }
+RCACriticsVisu >> adherenceToExternalLibrary [
+	<script: 'RCACriticsVisu new adherenceToExternalLibrary inspect'>
+	^ (model allNamespaces
+		select: [ :n | n isStub and: [ n classes notEmpty ] ]
+		thenCollect: [ :n | n -> n queryIncomingDependencies ]) asOrderedDictionary
+]
+
+{ #category : #'software visualization' }
 RCACriticsVisu >> classDiagram [
 	<script: 'RCACriticsVisu new classDiagram inspect'>
 	| b |
