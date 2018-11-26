@@ -43,6 +43,12 @@ RCACriticsVisu >> classesAttributes [
 ]
 
 { #category : #'software visualization' }
+RCACriticsVisu >> deadMethod [
+	<script: 'RCACriticsVisu new deadMethod inspect'>
+	^ (model allModelMethods collect: #incomingInvocations thenSelect: #isNotEmpty) asOrderedCollection
+]
+
+{ #category : #'software visualization' }
 RCACriticsVisu >> deprecatedClasses [
 	<script: 'RCACriticsVisu new deprecatedClasses inspect'>
 	^ model allModelClasses
