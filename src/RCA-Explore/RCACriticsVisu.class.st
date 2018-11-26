@@ -95,6 +95,14 @@ RCACriticsVisu >> initialize [
 ]
 
 { #category : #'software visualization' }
+RCACriticsVisu >> mainMethods [
+	"How handle the JavaFX application ? The Swing applications ? "
+
+	<script: 'RCACriticsVisu new mainMethods inspect'>
+	^ (model allModelMethods select: [ :method | method name = 'main' ]) asOrderedCollection 
+]
+
+{ #category : #'software visualization' }
 RCACriticsVisu >> packages [
 	<script: 'RCACriticsVisu new packages inspect'>
 	^ (model allModelNamespaces)
