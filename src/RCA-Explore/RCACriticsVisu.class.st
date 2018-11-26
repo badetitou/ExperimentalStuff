@@ -122,14 +122,14 @@ RCACriticsVisu >> packagesHierarchy [
 { #category : #'software visualization' }
 RCACriticsVisu >> packagesHierarchyWithComplexity [
 	<script: 'RCACriticsVisu new packagesHierarchyWithComplexity inspect'>
-	| view |
-	view := RTMondrian new.
-	view shape rectangle
-			width: [ :p | p numberOfClasses ];
-			height: [ :p | p numberOfMethods ];
-			linearFillColor: #numberOfLinesOfCode within: model allModelNamespaces entities;
-			borderColor: Color lightGray.
-	^ view
+	| b |
+	b := RTMondrian new.
+	b shape rectangle
+		width: [ :p | p numberOfClasses ];
+		height: [ :p | p numberOfMethods ];
+		linearFillColor: #numberOfLinesOfCode within: model allModelNamespaces entities;
+		borderColor: Color lightGray.
+	^ b
 		nodes: model allModelNamespaces;
 		edgesFrom: #parentScope;
 		treeLayout;
