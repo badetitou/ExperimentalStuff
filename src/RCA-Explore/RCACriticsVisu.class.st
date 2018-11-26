@@ -29,6 +29,12 @@ RCACriticsVisu >> classDiagram [
 ]
 
 { #category : #'software visualization' }
+RCACriticsVisu >> classesAttributes [
+	<script: 'RCACriticsVisu new classesAttributes inspect'>
+	^ model allModelClasses sort: [ :classeA :classeB | classeA attributes size > classeB attributes size ]
+]
+
+{ #category : #'software visualization' }
 RCACriticsVisu >> deprecatedClasses [
 	<script: 'RCACriticsVisu new deprecatedClasses inspect'>
 	^ model allModelClasses
@@ -64,6 +70,24 @@ RCACriticsVisu >> packages [
 RCACriticsVisu >> packagesHierarchy [
 	<script: 'RCACriticsVisu new packagesHierarchy inspect'>
 	^ RTMondrian new
+		nodes: model allModelNamespaces;
+		edgesFrom: #parentScope;
+		treeLayout;
+		build;
+		view
+]
+
+{ #category : #'software visualization' }
+RCACriticsVisu >> packagesHierarchyWithComplexity [
+	<script: 'RCACriticsVisu new packagesHierarchyWithComplexity inspect'>
+	| view |
+	view := RTMondrian new.
+	view shape rectangle
+			width: [ :p | p numberOfClasses ];
+			height: [ :p | p numberOfMethods ];
+			linearFillColor: #numberOfLinesOfCode within: model allModelNamespaces entities;
+			borderColor: Color lightGray.
+	^ view
 		nodes: model allModelNamespaces;
 		edgesFrom: #parentScope;
 		treeLayout;
