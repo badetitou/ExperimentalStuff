@@ -18,7 +18,7 @@ Class {
 
 { #category : #'software visualization' }
 RCACriticsVisu >> adherenceToExternalLibrary [
-	<script: 'RCACriticsVisu new adherenceToExternalLibrary inspect'>
+	<script: 'self new adherenceToExternalLibrary inspect'>
 	^ (model allNamespaces
 		select: [ :n | n isStub and: [ n classes notEmpty ] ]
 		thenCollect: [ :n | n -> n queryIncomingDependencies ]) asOrderedDictionary
@@ -26,7 +26,7 @@ RCACriticsVisu >> adherenceToExternalLibrary [
 
 { #category : #'software visualization' }
 RCACriticsVisu >> classDiagram [
-	<script: 'RCACriticsVisu new classDiagram inspect'>
+	<script: 'self new classDiagram inspect'>
 	| b |
 	b := RTMondrian new.
 	b nodes: model allModelClasses.
@@ -38,13 +38,14 @@ RCACriticsVisu >> classDiagram [
 
 { #category : #'software visualization' }
 RCACriticsVisu >> classesAttributes [
-	<script: 'RCACriticsVisu new classesAttributes inspect'>
-	^ model allModelClasses sort: [ :classeA :classeB | classeA attributes size > classeB attributes size ]
+	<script: 'self new classesAttributes inspect'>
+	^ model allModelClasses
+		sort: [ :classeA :classeB | classeA attributes size > classeB attributes size ]
 ]
 
 { #category : #'software visualization' }
 RCACriticsVisu >> classesInPackagesHierarchy [
-	<script: 'RCACriticsVisu new classesInPackagesHierarchy inspect'>
+	<script: 'self new classesInPackagesHierarchy inspect'>
 	| b |
 	b := RTMondrian new.
 	b shape rectangle.
@@ -55,7 +56,8 @@ RCACriticsVisu >> classesInPackagesHierarchy [
 				color: Color red;
 				size: #numberOfLinesOfCode.
 			b nodes: p classes.
-			b edges connectFrom: #superclass. b layout tree ];
+			b edges connectFrom: #superclass.
+			b layout tree ];
 		edgesFrom: #parentScope;
 		treeLayout;
 		build;
@@ -64,13 +66,14 @@ RCACriticsVisu >> classesInPackagesHierarchy [
 
 { #category : #'software visualization' }
 RCACriticsVisu >> deadMethod [
-	<script: 'RCACriticsVisu new deadMethod inspect'>
-	^ (model allModelMethods collect: #incomingInvocations thenSelect: #isNotEmpty) asOrderedCollection
+	<script: 'self new deadMethod inspect'>
+	^ (model allModelMethods collect: #incomingInvocations thenSelect: #isNotEmpty)
+		asOrderedCollection
 ]
 
 { #category : #'software visualization' }
 RCACriticsVisu >> deprecatedClasses [
-	<script: 'RCACriticsVisu new deprecatedClasses inspect'>
+	<script: 'self new deprecatedClasses inspect'>
 	^ model allModelClasses
 		select: [ :t | 
 			t annotationInstances notEmpty
@@ -79,14 +82,14 @@ RCACriticsVisu >> deprecatedClasses [
 
 { #category : #'software visualization' }
 RCACriticsVisu >> godClassesByLines [
-	<script: 'RCACriticsVisu new godClassesByLines inspect'>
-	^ (model allModelClasses select: [ :each | each numberOfLinesOfCode > 150 ])
+	<script: 'self new godClassesByLines inspect'>
+	^ model allModelClasses select: [ :each | each numberOfLinesOfCode > 150 ]
 ]
 
 { #category : #'software visualization' }
 RCACriticsVisu >> godClassesByMethods [
-	<script: 'RCACriticsVisu new godClassesByMethods inspect'>
-	^ (model allModelClasses select: [ :each | each numberOfMethods > 50 ])
+	<script: 'self new godClassesByMethods inspect'>
+	^ model allModelClasses select: [ :each | each numberOfMethods > 50 ]
 ]
 
 { #category : #initialization }
@@ -98,8 +101,8 @@ RCACriticsVisu >> initialize [
 RCACriticsVisu >> mainMethods [
 	"How handle the JavaFX application ? The Swing applications ? "
 
-	<script: 'RCACriticsVisu new mainMethods inspect'>
-	^ (model allModelMethods select: [ :method | method name = 'main' ]) asOrderedCollection 
+	<script: 'self new mainMethods inspect'>
+	^ (model allModelMethods select: [ :method | method name = 'main' ]) asOrderedCollection
 ]
 
 { #category : #'private - configuration' }
@@ -109,13 +112,13 @@ RCACriticsVisu >> modelName [
 
 { #category : #'software visualization' }
 RCACriticsVisu >> packages [
-	<script: 'RCACriticsVisu new packages inspect'>
-	^ (model allModelNamespaces)
+	<script: 'self new packages inspect'>
+	^ model allModelNamespaces
 ]
 
 { #category : #'software visualization' }
 RCACriticsVisu >> packagesHierarchy [
-	<script: 'RCACriticsVisu new packagesHierarchy inspect'>
+	<script: 'self new packagesHierarchy inspect'>
 	^ RTMondrian new
 		nodes: model allModelNamespaces;
 		edgesFrom: #parentScope;
@@ -126,7 +129,7 @@ RCACriticsVisu >> packagesHierarchy [
 
 { #category : #'software visualization' }
 RCACriticsVisu >> packagesHierarchyWithComplexity [
-	<script: 'RCACriticsVisu new packagesHierarchyWithComplexity inspect'>
+	<script: 'self new packagesHierarchyWithComplexity inspect'>
 	| b |
 	b := RTMondrian new.
 	b shape rectangle
@@ -144,7 +147,10 @@ RCACriticsVisu >> packagesHierarchyWithComplexity [
 
 { #category : #'software visualization' }
 RCACriticsVisu >> testMethods [
-	<script: 'RCACriticsVisu new testMethods inspect'>
-	^ (model allModelMethods select: [ :t | t annotationInstances notEmpty and: [ t annotationTypes anySatisfy: [ :annotation | annotation name endsWith: 'Test' ] ] ])
+	<script: 'self new testMethods inspect'>
+	^ (model allModelMethods
+		select: [ :t | 
+			t annotationInstances notEmpty
+				and: [ t annotationTypes anySatisfy: [ :annotation | annotation name endsWith: 'Test' ] ] ])
 		asOrderedCollection flattened
 ]
