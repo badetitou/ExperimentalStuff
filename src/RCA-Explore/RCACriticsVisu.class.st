@@ -91,7 +91,7 @@ RCACriticsVisu >> godClassesByMethods [
 
 { #category : #initialization }
 RCACriticsVisu >> initialize [
-	model := MooseModel root allModels detect: [:m | m name = 'rca']
+	model := MooseModel root allModels detect: [ :m | m name = self modelName ]
 ]
 
 { #category : #'software visualization' }
@@ -100,6 +100,11 @@ RCACriticsVisu >> mainMethods [
 
 	<script: 'RCACriticsVisu new mainMethods inspect'>
 	^ (model allModelMethods select: [ :method | method name = 'main' ]) asOrderedCollection 
+]
+
+{ #category : #'private - configuration' }
+RCACriticsVisu >> modelName [
+	^ 'rca'
 ]
 
 { #category : #'software visualization' }
