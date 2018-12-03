@@ -50,7 +50,7 @@ RCACriticsVisu >> classesInPackagesHierarchy [
 	b := RTMondrian new.
 	b shape rectangle.
 	^ b
-		nodes: model allModelNamespaces
+		nodes: (model allModelNamespaces flatCollectAsSet: #withAllParentScopes)
 			forEach: [ :p | 
 			b shape rectangle
 				color: Color red;
