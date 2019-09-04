@@ -8,16 +8,16 @@ mooseModel name: 'rca'.
 mooseModel install.
 "
 Class {
-	#name : #RCACriticsVisu,
+	#name : #OOCriticsVisu,
 	#superclass : #Object,
 	#instVars : [
 		'model'
 	],
-	#category : #'RCA-Explore'
+	#category : #OOAnalysis
 }
 
 { #category : #'software visualization' }
-RCACriticsVisu >> adherenceToExternalLibrary [
+OOCriticsVisu >> adherenceToExternalLibrary [
 	<script: 'self new adherenceToExternalLibrary inspect'>
 	^ (model allNamespaces
 		select: [ :n | n isStub and: [ n classes notEmpty ] ]
@@ -25,7 +25,7 @@ RCACriticsVisu >> adherenceToExternalLibrary [
 ]
 
 { #category : #'software visualization' }
-RCACriticsVisu >> classDiagram [
+OOCriticsVisu >> classDiagram [
 	<script: 'self new classDiagram inspect'>
 	| b |
 	b := RTMondrian new.
@@ -37,14 +37,14 @@ RCACriticsVisu >> classDiagram [
 ]
 
 { #category : #'software visualization' }
-RCACriticsVisu >> classesAttributes [
+OOCriticsVisu >> classesAttributes [
 	<script: 'self new classesAttributes inspect'>
 	^ model allModelClasses
 		sort: [ :classeA :classeB | classeA attributes size > classeB attributes size ]
 ]
 
 { #category : #'software visualization' }
-RCACriticsVisu >> classesInPackagesHierarchy [
+OOCriticsVisu >> classesInPackagesHierarchy [
 	<script: 'self new classesInPackagesHierarchy inspect'>
 	| b |
 	b := RTMondrian new.
@@ -65,14 +65,14 @@ RCACriticsVisu >> classesInPackagesHierarchy [
 ]
 
 { #category : #'software visualization' }
-RCACriticsVisu >> deadMethod [
+OOCriticsVisu >> deadMethod [
 	<script: 'self new deadMethod inspect'>
 	^ (model allModelMethods collect: #incomingInvocations thenSelect: #isNotEmpty)
 		asOrderedCollection
 ]
 
 { #category : #'software visualization' }
-RCACriticsVisu >> deprecatedClasses [
+OOCriticsVisu >> deprecatedClasses [
 	<script: 'self new deprecatedClasses inspect'>
 	^ model allModelClasses
 		select: [ :t | 
@@ -81,24 +81,24 @@ RCACriticsVisu >> deprecatedClasses [
 ]
 
 { #category : #'software visualization' }
-RCACriticsVisu >> godClassesByLines [
+OOCriticsVisu >> godClassesByLines [
 	<script: 'self new godClassesByLines inspect'>
 	^ model allModelClasses select: [ :each | each numberOfLinesOfCode > 150 ]
 ]
 
 { #category : #'software visualization' }
-RCACriticsVisu >> godClassesByMethods [
+OOCriticsVisu >> godClassesByMethods [
 	<script: 'self new godClassesByMethods inspect'>
 	^ model allModelClasses select: [ :each | each numberOfMethods > 50 ]
 ]
 
 { #category : #initialization }
-RCACriticsVisu >> initialize [
-	model := MooseModel root allModels detect: [ :m | m name = self modelName ]
+OOCriticsVisu >> initialize [
+	model := MooseModel root allModels detect: [ :m | m name = self modelName ] ifNone: [ MooseModel root first ]
 ]
 
 { #category : #'software visualization' }
-RCACriticsVisu >> mainMethods [
+OOCriticsVisu >> mainMethods [
 	"How handle the JavaFX application ? The Swing applications ? "
 
 	<script: 'self new mainMethods inspect'>
@@ -106,18 +106,18 @@ RCACriticsVisu >> mainMethods [
 ]
 
 { #category : #'private - configuration' }
-RCACriticsVisu >> modelName [
+OOCriticsVisu >> modelName [
 	^ 'rca'
 ]
 
 { #category : #'software visualization' }
-RCACriticsVisu >> packages [
+OOCriticsVisu >> packages [
 	<script: 'self new packages inspect'>
 	^ model allModelNamespaces
 ]
 
 { #category : #'software visualization' }
-RCACriticsVisu >> packagesHierarchy [
+OOCriticsVisu >> packagesHierarchy [
 	<script: 'self new packagesHierarchy inspect'>
 	^ RTMondrian new
 		nodes: model allModelNamespaces;
@@ -128,7 +128,7 @@ RCACriticsVisu >> packagesHierarchy [
 ]
 
 { #category : #'software visualization' }
-RCACriticsVisu >> packagesHierarchyWithComplexity [
+OOCriticsVisu >> packagesHierarchyWithComplexity [
 	<script: 'self new packagesHierarchyWithComplexity inspect'>
 	| b |
 	b := RTMondrian new.
@@ -146,7 +146,7 @@ RCACriticsVisu >> packagesHierarchyWithComplexity [
 ]
 
 { #category : #'software visualization' }
-RCACriticsVisu >> testMethods [
+OOCriticsVisu >> testMethods [
 	<script: 'self new testMethods inspect'>
 	^ (model allModelMethods
 		select: [ :t | 

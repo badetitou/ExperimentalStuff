@@ -1,6 +1,6 @@
 Extension { #name : #FAMIXEnumValue }
 
-{ #category : #'*RCA-Explore' }
+{ #category : #'*OOAnalysis' }
 FAMIXEnumValue >> namespaceScope [ 
 	^ self belongsTo namespaceScope
 ]

@@ -5,18 +5,18 @@ mooseModel := MooseModel importFromMSEStream: msePath asFileReference readStream
 mooseModel rootFolder: rootFolderPath.
 "
 Class {
-	#name : #RCAVisus,
+	#name : #OOVisus,
 	#superclass : #Object,
 	#instVars : [
 		'model',
 		'dependencyMatrix',
 		'builder'
 	],
-	#category : #'RCA-Explore'
+	#category : #OOAnalysis
 }
 
 { #category : #'private view' }
-RCAVisus >> arrowedLineOnCompositeNodes [
+OOVisus >> arrowedLineOnCompositeNodes [
 	^ RTArrowedLine new
 		attachPoint:
 			(RTShorterDistanceAttachPointAndCompositeShape new
@@ -24,7 +24,7 @@ RCAVisus >> arrowedLineOnCompositeNodes [
 ]
 
 { #category : #'software visualization' }
-RCAVisus >> classesWithColoredPackages [
+OOVisus >> classesWithColoredPackages [
 	<script: 'RCAVisus new classesWithColoredPackages'>
 	
 	| entities legend |
@@ -82,14 +82,14 @@ RCAVisus >> classesWithColoredPackages [
 ]
 
 { #category : #'private view' }
-RCAVisus >> collectPackageColors [
+OOVisus >> collectPackageColors [
 	^(builder view elements
 		collectAsSet: [ :e | e model namespaceScope -> e color ])
 		asOrderedCollection sorted: [ :x :y | x key mooseName <= y key mooseName ]
 ]
 
 { #category : #'software visualization' }
-RCAVisus >> cyclesInPackage [
+OOVisus >> cyclesInPackage [
 	<script: 'RCAVisus new cyclesInPackage'>
 
 	| cycleCalculator entities |
@@ -143,7 +143,7 @@ RCAVisus >> cyclesInPackage [
 ]
 
 { #category : #'software visualization' }
-RCAVisus >> cyclesInPackageRoassalSpecial [
+OOVisus >> cyclesInPackageRoassalSpecial [
 	"same as cyclesInPackage, but correct a bug in Roassal to allow width and color on edges"
 	<script: 'RCAVisus new cyclesInPackageRoassalSpecial'>
 
@@ -203,29 +203,29 @@ RCAVisus >> cyclesInPackageRoassalSpecial [
 ]
 
 { #category : #'private  model' }
-RCAVisus >> defaultJavaPackagePrefix [
+OOVisus >> defaultJavaPackagePrefix [
 	^ 'org::rcaexplore'
 ]
 
 { #category : #'private  model' }
-RCAVisus >> dependenciesBetween: aFamixEntity and: aNamespace [
+OOVisus >> dependenciesBetween: aFamixEntity and: aNamespace [
 	^ (dependencyMatrix at: aFamixEntity ifAbsent: [ Dictionary new])
 			at: aNamespace ifAbsent: [ #()]
 ]
 
 { #category : #'private  model' }
-RCAVisus >> formatName: aNamespace [
+OOVisus >> formatName: aNamespace [
 	^ (aNamespace mooseName withoutPrefix: (self defaultJavaPackagePrefix , '::'))
 			copyReplaceAll: '::' with: '.'
 ]
 
 { #category : #initialization }
-RCAVisus >> initialize [
+OOVisus >> initialize [
 	model := MooseModel root allModels detect: [:m | m name = 'rca']
 ]
 
 { #category : #'private  model' }
-RCAVisus >> initializeNamespaceDependenciesFor: entities [
+OOVisus >> initializeNamespaceDependenciesFor: entities [
 	dependencyMatrix := Dictionary new.
 	entities
 		do:
@@ -233,12 +233,12 @@ RCAVisus >> initializeNamespaceDependenciesFor: entities [
 ]
 
 { #category : #'private  model' }
-RCAVisus >> is: p inCycle: cycleCalculator [
+OOVisus >> is: p inCycle: cycleCalculator [
 	^ (cycleCalculator findNode: p) isInCycle
 ]
 
 { #category : #'private view' }
-RCAVisus >> makeLinksClickable [
+OOVisus >> makeLinksClickable [
 	(builder view edges) when: TRMouseClick do: [ :evt || from to|
 		from := evt element from model.
 		to := evt element to model.
@@ -247,17 +247,17 @@ RCAVisus >> makeLinksClickable [
 ]
 
 { #category : #'private view' }
-RCAVisus >> makeNodesClickable [
+OOVisus >> makeNodesClickable [
 	(builder view elements) when: TRMouseClick do: [ :evt | evt element model inspect ]
 ]
 
 { #category : #'private  model' }
-RCAVisus >> namespaceDependenciesFor: aNamespace [
+OOVisus >> namespaceDependenciesFor: aNamespace [
 	^ (dependencyMatrix at: aNamespace) values flatten asSet collect: #namespaceScope
 ]
 
 { #category : #'software visualization' }
-RCAVisus >> packagesAndClasses [
+OOVisus >> packagesAndClasses [
 	<script: 'RCAVisus new packagesAndClasses'>
 	| entities viewEdges |
 	
@@ -309,7 +309,7 @@ RCAVisus >> packagesAndClasses [
 ]
 
 { #category : #'private  model' }
-RCAVisus >> topNamespaceFor: aFamixEntity [
+OOVisus >> topNamespaceFor: aFamixEntity [
 	"returns the top namespace of the system or one of its direct children"
 	| namespace |
 	namespace := aFamixEntity namespaceScope.
@@ -320,7 +320,7 @@ RCAVisus >> topNamespaceFor: aFamixEntity [
 ]
 
 { #category : #'private view' }
-RCAVisus >> zoomableMondrianBuilder [
+OOVisus >> zoomableMondrianBuilder [
 	builder := RTMondrian new.
 	builder view @ RTZoomableView.
 	^ builder
