@@ -94,7 +94,7 @@ OOCriticsVisu >> godClassesByMethods [
 
 { #category : #initialization }
 OOCriticsVisu >> initialize [
-	model := MooseModel root allModels detect: [ :m | m name = self modelName ] ifNone: [ MooseModel root first ]
+	model := MooseModel root allModels detect: [ :m | m name = self modelName ] ifNone: [ MooseModel root allModels first ]
 ]
 
 { #category : #'software visualization' }
