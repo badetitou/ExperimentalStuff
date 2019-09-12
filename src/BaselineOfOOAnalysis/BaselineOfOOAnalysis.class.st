@@ -24,7 +24,7 @@ BaselineOfOOAnalysis >> customProjectAttributes [
 
 { #category : #baselines }
 BaselineOfOOAnalysis >> defineDependencies: spec [
-	spec baseline: 'Moose' with: [ spec repository: 'github://moosetechnology/Moose:development/src' ]
+	
 ]
 
 { #category : #baselines }
@@ -35,5 +35,7 @@ BaselineOfOOAnalysis >> defineGroups: spec [
 BaselineOfOOAnalysis >> definePackages: spec [
 	spec package: 'OOAnalysis'.
 
-	spec for: #(#WithoutFamix) do: [ spec package: 'OOAnalysis' with: [ spec requires: #('Moose') ] ]
+	spec for: #(#WithoutFamix) do: [ 
+		spec baseline: 'Moose' with: [ spec repository: 'github://moosetechnology/Moose:development/src' ].
+		spec package: 'OOAnalysis' with: [ spec requires: #('Moose') ] ]
 ]
