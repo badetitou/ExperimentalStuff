@@ -27,13 +27,16 @@ OOCriticsVisu >> adherenceToExternalLibrary [
 { #category : #'software visualization' }
 OOCriticsVisu >> classDiagram [
 	<script: 'self new classDiagram inspect'>
-	| b |
+	| b v |
 	b := RTMondrian new.
 	b nodes: model allModelClasses.
 	b edges connectFrom: #superclass.
 	b layout tree.
 	b build.
-	^ b view
+	v := b view.
+	v @ RTZoomableView.
+	v @ RTDraggableView.
+	^ v
 ]
 
 { #category : #'software visualization' }
@@ -119,30 +122,39 @@ OOCriticsVisu >> packages [
 { #category : #'software visualization' }
 OOCriticsVisu >> packagesHierarchy [
 	<script: 'self new packagesHierarchy inspect'>
-	^ RTMondrian new
+	|v |
+	
+	v := RTMondrian new
 		nodes: model allModelNamespaces;
 		edgesFrom: #parentScope;
 		treeLayout;
 		build;
-		view
+		view.
+	v @ RTZoomableView.
+	v @ RTDraggableView.
+	^ v
 ]
 
 { #category : #'software visualization' }
 OOCriticsVisu >> packagesHierarchyWithComplexity [
 	<script: 'self new packagesHierarchyWithComplexity inspect'>
-	| b |
+	| b v |
 	b := RTMondrian new.
 	b shape rectangle
 		width: [ :p | p numberOfClasses ];
 		height: [ :p | p numberOfMethods ];
-		linearFillColor: #numberOfLinesOfCode within: model allModelNamespaces entities;
+		linearFillColor: #numberOfLinesOfCode
+			within: model allModelNamespaces entities;
 		borderColor: Color lightGray.
-	^ b
+	v := b
 		nodes: model allModelNamespaces;
 		edgesFrom: #parentScope;
 		treeLayout;
 		build;
-		view
+		view.
+	v @ RTZoomableView.
+	v @ RTDraggableView.
+	^ v
 ]
 
 { #category : #'software visualization' }
