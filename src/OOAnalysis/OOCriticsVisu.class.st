@@ -97,7 +97,13 @@ OOCriticsVisu >> godClassesByMethods [
 
 { #category : #initialization }
 OOCriticsVisu >> initialize [
-	model := MooseModel root allModels detect: [ :m | m name = self modelName ] ifNone: [ MooseModel root allModels first ]
+	model := MooseModel root allModels
+		detect: [ :m | m name = self modelName ]
+		ifNone: [ [ MooseModel root allModels first ]
+				on: SubscriptOutOfBounds
+				do: [ :exc | 
+					Error
+						signal: 'Cannot perform analysis because no model is loaded into Moose.' ] ]
 ]
 
 { #category : #'software visualization' }
