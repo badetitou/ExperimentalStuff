@@ -49,10 +49,10 @@ OOCriticsVisu >> classesAttributes [
 { #category : #'software visualization' }
 OOCriticsVisu >> classesInPackagesHierarchy [
 	<script: 'self new classesInPackagesHierarchy inspect'>
-	| b |
+	| b v |
 	b := RTMondrian new.
 	b shape rectangle.
-	^ b
+	v := b
 		nodes: (model allModelNamespaces flatCollectAsSet: #withAllParentScopes)
 			forEach: [ :p | 
 			b shape rectangle
@@ -64,7 +64,10 @@ OOCriticsVisu >> classesInPackagesHierarchy [
 		edgesFrom: #parentScope;
 		treeLayout;
 		build;
-		view
+		view.
+	v @ RTDraggableView.
+	v @ RTZoomableView.
+	^ v
 ]
 
 { #category : #'software visualization' }
