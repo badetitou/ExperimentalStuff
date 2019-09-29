@@ -49,10 +49,10 @@ OOCriticsVisu >> classesAttributes [
 { #category : #'software visualization' }
 OOCriticsVisu >> classesInPackagesHierarchy [
 	<script: 'self new classesInPackagesHierarchy inspect'>
-	| b |
+	| b v |
 	b := RTMondrian new.
 	b shape rectangle.
-	^ b
+	v := b
 		nodes: (model allModelNamespaces flatCollectAsSet: #withAllParentScopes)
 			forEach: [ :p | 
 			b shape rectangle
@@ -64,7 +64,10 @@ OOCriticsVisu >> classesInPackagesHierarchy [
 		edgesFrom: #parentScope;
 		treeLayout;
 		build;
-		view
+		view.
+	v @ RTDraggableView.
+	v @ RTZoomableView.
+	^ v
 ]
 
 { #category : #'software visualization' }
@@ -97,7 +100,13 @@ OOCriticsVisu >> godClassesByMethods [
 
 { #category : #initialization }
 OOCriticsVisu >> initialize [
-	model := MooseModel root allModels detect: [ :m | m name = self modelName ] ifNone: [ MooseModel root allModels first ]
+	model := MooseModel root allModels
+		detect: [ :m | m name = self modelName ]
+		ifNone: [ [ MooseModel root allModels first ]
+				on: SubscriptOutOfBounds
+				do: [ :exc | 
+					Error
+						signal: 'Cannot perform analysis because no model is loaded into Moose.' ] ]
 ]
 
 { #category : #'software visualization' }
