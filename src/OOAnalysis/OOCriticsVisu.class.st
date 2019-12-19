@@ -80,6 +80,28 @@ OOCriticsVisu >> deprecatedClasses [
 				and: [ t annotationTypes anySatisfy: [ :a | a name = 'Deprecated' ] ] ]
 ]
 
+{ #category : #'students visualization' }
+OOCriticsVisu >> florianChevalier [
+  < script: 'self new florianChevalier inspect'>
+  | b |
+  b := RTMondrian new.
+  b shape
+     rectangle;
+     if: [:m |  m numberOfLinesOfCode < 50 ] fillColor: Color green;
+     if: [:m |  m numberOfLinesOfCode >= 50 ] fillColor: Color orange;
+     if: [:m |  m numberOfLinesOfCode >= 500 ] fillColor: Color red;
+     withTextAbove: #name.
+  b nodes: model allModelClasses forEach: [:m |  b shape circle
+           size: #numberOfLinesOfCode;
+           if: [:method |  method incomingInvocations isEmpty ] fillColor: Color blue.
+        b nodes: m methods.
+        b layout verticalLine ].
+  b edgesFrom: #parentPackage.
+  b layout tree.
+  b build.
+  ^ b view
+]
+
 { #category : #'software visualization' }
 OOCriticsVisu >> godClassesByLines [
 	<script: 'self new godClassesByLines inspect'>
@@ -153,4 +175,18 @@ OOCriticsVisu >> testMethods [
 			t annotationInstances notEmpty
 				and: [ t annotationTypes anySatisfy: [ :annotation | annotation name endsWith: 'Test' ] ] ])
 		asOrderedCollection flattened
+]
+
+{ #category : #'students visualization' }
+OOCriticsVisu >> yoannEon [
+  < script: 'self new yoannEon inspect'>
+  | b |
+  b := RTMondrian new.
+  b nodes: model allModelClasses.
+  b edgesFrom: #superclass .
+  b normalizer normalizeColor: #numberOfLinesOfCode using: {Color white . 
+        Color black} min: 0 max: 1000.
+  b layout tree.
+  b build.
+  ^ b view
 ]
