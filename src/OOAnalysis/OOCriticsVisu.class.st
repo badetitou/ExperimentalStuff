@@ -121,6 +121,13 @@ OOCriticsVisu >> godClassesByMethods [
 ]
 
 { #category : #'software visualization' }
+OOCriticsVisu >> godCyclomaticComplexity [
+	<script: 'self new godCyclomaticComplexity inspect'>
+	^ ((self model allBehaviourals) collect: [ :entity | entity -> entity cyclomaticComplexity ] thenSelect: [ :assoc | assoc value > 3 ])
+		asOrderedCollection sort: #value descending
+]
+
+{ #category : #'software visualization' }
 OOCriticsVisu >> mainMethods [
 	"How handle the JavaFX application ? The Swing applications ? "
 
