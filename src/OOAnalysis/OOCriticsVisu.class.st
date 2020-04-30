@@ -73,8 +73,7 @@ OOCriticsVisu >> classesInPackagesHierarchy [
 { #category : #'software visualization' }
 OOCriticsVisu >> deadMethod [
 	<script: 'self new deadMethod inspect'>
-	^ (self model allModelMethods collect: #incomingInvocations thenSelect: #isNotEmpty)
-		asOrderedCollection
+	^ (self model allModelMethods collect: [ :method | method -> method incomingInvocations ] thenSelect: [ :assoc | assoc value isEmpty ]) asOrderedCollection
 ]
 
 { #category : #'software visualization' }
