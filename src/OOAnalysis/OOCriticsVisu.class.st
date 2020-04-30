@@ -77,6 +77,12 @@ OOCriticsVisu >> deadMethod [
 ]
 
 { #category : #'software visualization' }
+OOCriticsVisu >> dependenciesWithCycles [
+  < script: 'self new dependenciesWithCycles inspect'>
+  (self model allUsing: FamixTNamespace) viewDependenciesWithCycles
+]
+
+{ #category : #'software visualization' }
 OOCriticsVisu >> deprecatedClasses [
 	<script: 'self new deprecatedClasses inspect'>
 	^ self model allModelClasses
@@ -149,9 +155,23 @@ OOCriticsVisu >> model: anObject [
 	model := anObject
 ]
 
+{ #category : #'software visualization' }
+OOCriticsVisu >> modelDependenciesWithCycles [
+	<script: 'self new dependenciesWithCycles inspect'>
+	((self model allUsing: FamixTNamespace) reject: [ :a | a isStub ]) viewDependenciesWithCycles
+]
+
 { #category : #'private - configuration' }
 OOCriticsVisu >> modelName [
 	^ 'rca'
+]
+
+{ #category : #'software visualization' }
+OOCriticsVisu >> namespacesMetrics [
+	<script: 'self new packagesMetrics inspect'>
+	^ ((self model allUsing: FamixTNamespace)
+		collect: [ :namespace | namespace -> {(#bunchCoupling -> namespace bunchCouplingWithAll) . (#bunchCohesion -> namespace bunchCohesion)} asDictionary ])
+		asDictionary
 ]
 
 { #category : #'software visualization' }
