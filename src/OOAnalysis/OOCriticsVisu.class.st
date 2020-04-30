@@ -42,8 +42,8 @@ OOCriticsVisu >> classDiagram [
 { #category : #'software visualization' }
 OOCriticsVisu >> classesAttributes [
 	<script: 'self new classesAttributes inspect'>
-	^ self model allModelClasses
-		sort: [ :classeA :classeB | classeA attributes size > classeB attributes size ]
+	^ (self model allModelClasses collect: [ :each | each -> each attributes size ]) asOrderedCollection
+		sort: #value descending
 ]
 
 { #category : #'software visualization' }
@@ -91,6 +91,15 @@ OOCriticsVisu >> deprecatedClasses [
 				and: [ t annotationTypes anySatisfy: [ :a | a name = 'Deprecated' ] ] ]
 ]
 
+{ #category : #'software visualization' }
+OOCriticsVisu >> deprecatedMethods [
+	<script: 'self new deprecatedMethods inspect'>
+	^ self model allModelMethods
+		select: [ :t | 
+			t annotationInstances notEmpty
+				and: [ t annotationTypes anySatisfy: [ :a | a name = 'Deprecated' ] ] ]
+]
+
 { #category : #'students visualization' }
 OOCriticsVisu >> florianChevalier [
   < script: 'self new florianChevalier inspect'>
@@ -116,13 +125,13 @@ OOCriticsVisu >> florianChevalier [
 { #category : #'software visualization' }
 OOCriticsVisu >> godClassesByLines [
 	<script: 'self new godClassesByLines inspect'>
-	^ self model allModelClasses select: [ :each | each numberOfLinesOfCode > 150 ]
+	^ (self model allModelClasses select: [ :each | each numberOfLinesOfCode > 500 ] thenCollect: [ :each | each -> each numberOfLinesOfCode ]) sort: #value descending 
 ]
 
 { #category : #'software visualization' }
 OOCriticsVisu >> godClassesByMethods [
 	<script: 'self new godClassesByMethods inspect'>
-	^ self model allModelClasses select: [ :each | each numberOfMethods > 50 ]
+	^ (self model allModelClasses select: [ :each | each numberOfMethods > 50 ] thenCollect: [ :each | each -> each numberOfMethods ]) sort: #value descending 
 ]
 
 { #category : #'software visualization' }
@@ -158,7 +167,19 @@ OOCriticsVisu >> model: anObject [
 { #category : #'software visualization' }
 OOCriticsVisu >> modelDependenciesWithCycles [
 	<script: 'self new dependenciesWithCycles inspect'>
-	((self model allUsing: FamixTNamespace) reject: [ :a | a isStub ]) viewDependenciesWithCycles
+	| view lb |
+	view := RTMondrian new.
+	((self model allUsing: FamixTNamespace) reject: [ :a | a isStub and: [ a classes isEmpty ] ]) viewDependenciesWithCyclesOn: view.
+	
+	lb := RTLegendBuilder new.
+	lb view: view view.
+
+	lb addText: 'Dependencies'.
+	lb addRectanglePolymetricWidth: 'number of classes' height: 'number of methods' box: 'namespace'.
+	lb addColor: Color red text: 'isInCycle'.
+	lb build.
+	
+	view openWithToolbar title: 'Dependencies (cycles)'
 ]
 
 { #category : #'private - configuration' }
@@ -199,13 +220,12 @@ OOCriticsVisu >> packagesHierarchy [
 { #category : #'software visualization' }
 OOCriticsVisu >> packagesHierarchyWithComplexity [
 	<script: 'self new packagesHierarchyWithComplexity inspect'>
-	| b v |
+	| b v lb |
 	b := RTMondrian new.
 	b shape rectangle
 		width: [ :p | p numberOfClasses ];
 		height: [ :p | p numberOfMethods ];
-		linearFillColor: #numberOfLinesOfCode
-			within: self model allModelNamespaces entities;
+		linearFillColor: #numberOfLinesOfCode within: self model allModelNamespaces entities;
 		borderColor: Color lightGray.
 	v := b
 		nodes: self model allModelNamespaces;
@@ -215,6 +235,15 @@ OOCriticsVisu >> packagesHierarchyWithComplexity [
 		view.
 	v @ RTZoomableView.
 	v @ RTDraggableView.
+
+	lb := RTLegendBuilder new.
+	lb view: b view.
+
+	lb addText: 'Dependencies'.
+	lb addRectanglePolymetricWidth: 'number of classes' height: 'number of methods' box: 'namespace'.
+	lb addColorFadingFrom: Color white to: Color black text: 'numberOfLinesOfCode'.
+	lb build.
+	
 	^ v
 ]
 
