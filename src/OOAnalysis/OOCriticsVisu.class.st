@@ -19,7 +19,7 @@ Class {
 { #category : #'software visualization' }
 OOCriticsVisu >> adherenceToExternalLibrary [
 	<script: 'self new adherenceToExternalLibrary inspect'>
-	^ (model allNamespaces
+	^ (self model allNamespaces
 		select: [ :n | n isStub and: [ n classes notEmpty ] ]
 		thenCollect: [ :n | n -> n queryIncomingDependencies ]) asOrderedDictionary
 ]
@@ -29,7 +29,7 @@ OOCriticsVisu >> classDiagram [
 	<script: 'self new classDiagram inspect'>
 	| b v |
 	b := RTMondrian new.
-	b nodes: model allModelClasses.
+	b nodes: self model allModelClasses.
 	b edges connectFrom: #superclass.
 	b layout tree.
 	b build.
@@ -42,7 +42,7 @@ OOCriticsVisu >> classDiagram [
 { #category : #'software visualization' }
 OOCriticsVisu >> classesAttributes [
 	<script: 'self new classesAttributes inspect'>
-	^ model allModelClasses
+	^ self model allModelClasses
 		sort: [ :classeA :classeB | classeA attributes size > classeB attributes size ]
 ]
 
@@ -53,7 +53,7 @@ OOCriticsVisu >> classesInPackagesHierarchy [
 	b := RTMondrian new.
 	b shape rectangle.
 	v := b
-		nodes: (model allModelNamespaces flatCollectAsSet: #withAllParentScopes)
+		nodes: (self model allModelNamespaces flatCollectAsSet: #withAllParentScopes)
 			forEach: [ :p | 
 			b shape rectangle
 				color: Color red;
@@ -73,14 +73,14 @@ OOCriticsVisu >> classesInPackagesHierarchy [
 { #category : #'software visualization' }
 OOCriticsVisu >> deadMethod [
 	<script: 'self new deadMethod inspect'>
-	^ (model allModelMethods collect: #incomingInvocations thenSelect: #isNotEmpty)
+	^ (self model allModelMethods collect: #incomingInvocations thenSelect: #isNotEmpty)
 		asOrderedCollection
 ]
 
 { #category : #'software visualization' }
 OOCriticsVisu >> deprecatedClasses [
 	<script: 'self new deprecatedClasses inspect'>
-	^ model allModelClasses
+	^ self model allModelClasses
 		select: [ :t | 
 			t annotationInstances notEmpty
 				and: [ t annotationTypes anySatisfy: [ :a | a name = 'Deprecated' ] ] ]
@@ -97,7 +97,7 @@ OOCriticsVisu >> florianChevalier [
      if: [:m |  m numberOfLinesOfCode >= 50 ] fillColor: Color orange;
      if: [:m |  m numberOfLinesOfCode >= 500 ] fillColor: Color red;
      withTextAbove: #name.
-  b nodes: model allModelClasses forEach: [:m |  b shape circle
+  b nodes: self model allModelClasses forEach: [:m |  b shape circle
            size: #numberOfLinesOfCode;
            if: [:method |  method incomingInvocations isEmpty ] fillColor: Color blue.
         b nodes: m methods.
@@ -111,24 +111,13 @@ OOCriticsVisu >> florianChevalier [
 { #category : #'software visualization' }
 OOCriticsVisu >> godClassesByLines [
 	<script: 'self new godClassesByLines inspect'>
-	^ model allModelClasses select: [ :each | each numberOfLinesOfCode > 150 ]
+	^ self model allModelClasses select: [ :each | each numberOfLinesOfCode > 150 ]
 ]
 
 { #category : #'software visualization' }
 OOCriticsVisu >> godClassesByMethods [
 	<script: 'self new godClassesByMethods inspect'>
-	^ model allModelClasses select: [ :each | each numberOfMethods > 50 ]
-]
-
-{ #category : #initialization }
-OOCriticsVisu >> initialize [
-	model := MooseModel root allModels
-		detect: [ :m | m name = self modelName ]
-		ifNone: [ [ MooseModel root allModels first ]
-				on: SubscriptOutOfBounds
-				do: [ :exc | 
-					Error
-						signal: 'Cannot perform analysis because no model is loaded into Moose.' ] ]
+	^ self model allModelClasses select: [ :each | each numberOfMethods > 50 ]
 ]
 
 { #category : #'software visualization' }
@@ -136,7 +125,22 @@ OOCriticsVisu >> mainMethods [
 	"How handle the JavaFX application ? The Swing applications ? "
 
 	<script: 'self new mainMethods inspect'>
-	^ (model allModelMethods select: [ :method | method name = 'main' ]) asOrderedCollection
+	^ (self model allModelMethods select: [ :method | method name = 'main' ]) asOrderedCollection
+]
+
+{ #category : #accessing }
+OOCriticsVisu >> model [
+	^ model
+		ifNil: [ MooseModel root allModels
+				detect: [ :m | m name = self modelName ]
+				ifNone: [ [ MooseModel root allModels first ]
+						on: SubscriptOutOfBounds
+						do: [ :exc | Error signal: 'Cannot perform analysis because no model is loaded into Moose.' ] ] ]
+]
+
+{ #category : #accessing }
+OOCriticsVisu >> model: anObject [
+	model := anObject
 ]
 
 { #category : #'private - configuration' }
@@ -147,7 +151,7 @@ OOCriticsVisu >> modelName [
 { #category : #'software visualization' }
 OOCriticsVisu >> packages [
 	<script: 'self new packages inspect'>
-	^ model allModelNamespaces
+	^ self model allModelNamespaces
 ]
 
 { #category : #'software visualization' }
@@ -156,7 +160,7 @@ OOCriticsVisu >> packagesHierarchy [
 	|v |
 	
 	v := RTMondrian new
-		nodes: model allModelNamespaces;
+		nodes: self model allModelNamespaces;
 		edgesFrom: #parentScope;
 		treeLayout;
 		build;
@@ -175,10 +179,10 @@ OOCriticsVisu >> packagesHierarchyWithComplexity [
 		width: [ :p | p numberOfClasses ];
 		height: [ :p | p numberOfMethods ];
 		linearFillColor: #numberOfLinesOfCode
-			within: model allModelNamespaces entities;
+			within: self model allModelNamespaces entities;
 		borderColor: Color lightGray.
 	v := b
-		nodes: model allModelNamespaces;
+		nodes: self model allModelNamespaces;
 		edgesFrom: #parentScope;
 		treeLayout;
 		build;
@@ -191,7 +195,7 @@ OOCriticsVisu >> packagesHierarchyWithComplexity [
 { #category : #'software visualization' }
 OOCriticsVisu >> testMethods [
 	<script: 'self new testMethods inspect'>
-	^ (model allModelMethods
+	^ (self model allModelMethods
 		select: [ :t | 
 			t annotationInstances notEmpty
 				and: [ t annotationTypes anySatisfy: [ :annotation | annotation name endsWith: 'Test' ] ] ])
@@ -203,7 +207,7 @@ OOCriticsVisu >> yoannEon [
   < script: 'self new yoannEon inspect'>
   | b |
   b := RTMondrian new.
-  b nodes: model allModelClasses.
+  b nodes: self model allModelClasses.
   b edgesFrom: #superclass .
   b normalizer normalizeColor: #numberOfLinesOfCode using: {Color white . 
         Color black} min: 0 max: 1000.
