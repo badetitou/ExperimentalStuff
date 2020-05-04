@@ -232,14 +232,14 @@ OOCriticsVisu >> packagesDependencyComplexity [
 	| b v lb |
 	b := RTMondrian new.
 	b shape rectangle
-		width: [ :p | (p queryIncomingDependencies withoutSelfLoops atScope: FamixTNamespace) size ];
-		height: [ :p | (p queryOutgoingDependencies withoutSelfLoops atScope: FamixTNamespace) size ];
+		width: [ :p | (p queryIncomingDependencies withoutSelfLoops atScope: FamixTNamespace) size * 2 ];
+		height: [ :p | (p queryOutgoingDependencies withoutSelfLoops atScope: FamixTNamespace) size * 2 ];
 		linearFillColor: #numberOfClasses within: self model allModelNamespaces entities;
 		borderColor: Color lightGray.
-	b
-		nodes: self model allModelNamespaces;
-		edgesFrom: #parentScope.
-	b layout force.
+	b nodes: self model allModelNamespaces.
+	b edges
+		connectToAll: [ :p | (p queryIncomingDependencies withoutSelfLoops atScope: FamixTNamespace) , (p queryOutgoingDependencies withoutSelfLoops atScope: FamixTNamespace) ].
+	b layout circle.
 	v := b
 		build;
 		view.
