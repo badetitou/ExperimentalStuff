@@ -236,9 +236,12 @@ OOCriticsVisu >> packagesDependencyComplexity [
 		height: [ :p | (p queryOutgoingDependencies withoutSelfLoops atScope: FamixTNamespace) size * 2 ];
 		linearFillColor: #numberOfClasses within: self model allModelNamespaces entities;
 		borderColor: Color lightGray.
+	b interaction highlightEdges: [ :each | each queryIncomingDependencies withoutSelfLoops atScope: FamixTNamespace ].
 	b nodes: self model allModelNamespaces.
 	b edges
 		connectToAll: [ :p | (p queryIncomingDependencies withoutSelfLoops atScope: FamixTNamespace) , (p queryOutgoingDependencies withoutSelfLoops atScope: FamixTNamespace) ].
+
+	"1halt."
 	b layout circle.
 	v := b
 		build;
