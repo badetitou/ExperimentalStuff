@@ -71,6 +71,19 @@ OOCriticsVisu >> classesInPackagesHierarchy [
 ]
 
 { #category : #'software visualization' }
+OOCriticsVisu >> computeCyclesInNamespaces [
+	"(tarjan findNode: p) isInCycle"
+
+	<script: 'self new classDiagram inspect'>
+	| tarjan |
+	tarjan := MalTarjan new.
+	tarjan nodes: self model allModelNamespaces.
+	tarjan edges: self model allModelNamespaces from: #yourself toAll: [ :a | a allProvidersAtScope: FamixTNamespace ].
+	tarjan run.
+	^ tarjan
+]
+
+{ #category : #'software visualization' }
 OOCriticsVisu >> deadMethod [
 	<script: 'self new deadMethod inspect'>
 	^ (self model allModelMethods collect: [ :method | method -> method incomingInvocations ] thenSelect: [ :assoc | assoc value isEmpty ]) asOrderedCollection
@@ -189,6 +202,18 @@ OOCriticsVisu >> modelName [
 
 { #category : #'software visualization' }
 OOCriticsVisu >> namespacesMetrics [
+	"
+	to string -> 
+	self associationsSelect: [ :assoc | (assoc value at: #bunchCohesion) isNotNil and: [ (assoc value at: #bunchCoupling) isNotNil ] ].
+
+	String streamContents: [ :aStream | self associationsDo: [:assoc | (aStream << assoc key asString).
+		aStream << String crlf.
+		assoc value associationsDo: [:each | aStream << '    '.
+			aStream << each key asString.
+			aStream << ' -> '.
+			aStream << each value asString.
+			aStream << String crlf]] ]"
+
 	<script: 'self new packagesMetrics inspect'>
 	^ ((self model allUsing: FamixTNamespace)
 		collect: [ :namespace | namespace -> {(#bunchCoupling -> namespace bunchCouplingWithAll) . (#bunchCohesion -> namespace bunchCohesion)} asDictionary ])
@@ -199,6 +224,37 @@ OOCriticsVisu >> namespacesMetrics [
 OOCriticsVisu >> packages [
 	<script: 'self new packages inspect'>
 	^ self model allModelNamespaces
+]
+
+{ #category : #'software visualization' }
+OOCriticsVisu >> packagesDependencyComplexity [
+	<script: 'self new packagesHierarchyWithComplexity inspect'>
+	| b v lb |
+	b := RTMondrian new.
+	b shape rectangle
+		width: [ :p | (p queryIncomingDependencies withoutSelfLoops atScope: FamixTNamespace) size ];
+		height: [ :p | (p queryOutgoingDependencies withoutSelfLoops atScope: FamixTNamespace) size ];
+		linearFillColor: #numberOfClasses within: self model allModelNamespaces entities;
+		borderColor: Color lightGray.
+	b
+		nodes: self model allModelNamespaces;
+		edgesFrom: #parentScope.
+	b layout force.
+	v := b
+		build;
+		view.
+	v @ RTZoomableView.
+	v @ RTDraggableView.
+
+	lb := RTLegendBuilder new.
+	lb view: b view.
+
+	lb addText: 'Dependencies'.
+	lb addRectanglePolymetricWidth: 'incomingDependency' height: 'outgoingDependency' box: 'namespace'.
+	lb addColorFadingFrom: Color white to: Color black text: 'numberOfClasses'.
+	lb build.
+
+	^ v
 ]
 
 { #category : #'software visualization' }
