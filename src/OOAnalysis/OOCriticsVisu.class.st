@@ -229,19 +229,34 @@ OOCriticsVisu >> packages [
 { #category : #'software visualization' }
 OOCriticsVisu >> packagesDependencyComplexity [
 	<script: 'self new packagesHierarchyWithComplexity inspect'>
-	| b v lb |
+	| b v lb nodesIncoming nodesOutgoing nodes |
+	nodes := self model allModelNamespaces.
+	nodesIncoming := Dictionary new.
+	nodesOutgoing := Dictionary new.
+	nodes
+		do: [ :each | 
+			nodesIncoming at: each put: (each queryIncomingDependencies withoutSelfLoops atScope: FamixTNamespace) asOrderedCollection.
+			nodesOutgoing at: each put: (each queryOutgoingDependencies withoutSelfLoops atScope: FamixTNamespace) asOrderedCollection ].
+
 	b := RTMondrian new.
 	b shape rectangle
-		width: [ :p | (p queryIncomingDependencies withoutSelfLoops atScope: FamixTNamespace) size * 2 ];
-		height: [ :p | (p queryOutgoingDependencies withoutSelfLoops atScope: FamixTNamespace) size * 2 ];
+		width: [ :p | (nodesIncoming at: p) size * 2 ];
+		height: [ :p | (nodesOutgoing at: p) size * 2 ];
 		linearFillColor: #numberOfClasses within: self model allModelNamespaces entities;
 		borderColor: Color lightGray.
-	b interaction highlightEdges: [ :each | each queryIncomingDependencies withoutSelfLoops atScope: FamixTNamespace ].
-	b nodes: self model allModelNamespaces.
-	b edges
-		connectToAll: [ :p | (p queryIncomingDependencies withoutSelfLoops atScope: FamixTNamespace) , (p queryOutgoingDependencies withoutSelfLoops atScope: FamixTNamespace) ].
-
-	"1halt."
+	b interaction
+		highlightEdges: [ :each | ((nodesOutgoing at: each model key), (nodesIncoming at: each model key)) asSet ]
+		color: [ :edge | 
+			| each value |
+			each := edge model key.
+			value := edge model value.
+			((nodesIncoming at: each) includes: value)
+				ifTrue: [ ((nodesOutgoing at: each) includes: value)
+						ifTrue: [ Color red ]
+						ifFalse: [ Color green ] ]
+				ifFalse: [ Color blue ] ].
+	b nodes: nodes.
+	b edges connectToAll: [ :p | ((nodesIncoming at: p) , (nodesOutgoing at: p)) asSet].
 	b layout circle.
 	v := b
 		build;
