@@ -21,7 +21,7 @@ OOCriticsVisu >> adherenceToExternalLibrary [
 	<script: 'self new adherenceToExternalLibrary inspect'>
 	^ (self model allNamespaces
 		select: [ :n | n isStub and: [ n classes notEmpty ] ]
-		thenCollect: [ :n | n -> n queryIncomingDependencies ]) asOrderedDictionary
+		thenCollect: [ :n | n -> n queryAllIncoming ]) asOrderedDictionary
 ]
 
 { #category : #'software visualization' }
@@ -53,7 +53,7 @@ OOCriticsVisu >> classesInPackagesHierarchy [
 	b := RTMondrian new.
 	b shape rectangle.
 	v := b
-		nodes: (self model allModelNamespaces flatCollectAsSet: #withAllParentScopes)
+		nodes: (self model allModelNamespaces)
 			forEach: [ :p | 
 			b shape rectangle
 				color: Color red;
